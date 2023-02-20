@@ -20,7 +20,6 @@ puppeteer
     await page.setViewport({ width: 1366, height: 768 });
     await page.goto('https://ebanoe.it');
 
-    // waiting for human verification section
     await page.waitForTimeout(10000);
 
     const humanVerificationSelectors = 'label.ctp-checkbox-label, [type="button"][value="Verify you are human"]';
