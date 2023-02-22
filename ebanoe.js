@@ -20,13 +20,22 @@ puppeteer
     await page.setViewport({ width: 1366, height: 768 });
     await page.goto('https://ebanoe.it');
 
-    await page.waitForTimeout(10000);
+    await page.waitForTimeout(5000);
 
-    const humanVerificationSelectors = 'label.ctp-checkbox-label, [type="button"][value="Verify you are human"]';
+    const humanVerificationIframeSelector = '#challenge-stage iframe';
+    const humanVerificationButtonSelector = '#challenge-stage input[type="button"]';
 
-    const humanVerificationElement = await page.waitForSelector(humanVerificationSelectors);
+    let humanVerificationElement;
 
-    await humanVerificationElement.click();
+    try {
+      const humanVerificationIframe = await page.waitForSelector(humanVerificationIframeSelector, { timeout: 5000 });
+
+      humanVerificationElement = await (await humanVerificationIframe.contentFrame()).waitForSelector('#cf-stage label.ctp-checkbox-label');
+    } catch (error) {
+      humanVerificationElement = await page.waitForSelector(humanVerificationButtonSelector);
+    }
+
+    await humanVerificationElement?.click?.();
 
     await page.waitForTimeout(5000);
 
