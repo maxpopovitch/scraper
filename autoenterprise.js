@@ -124,7 +124,7 @@ async function run () {
       await page.waitForSelector(dataTableSelector);
 
       try {
-        const value = await (await (await page.waitForSelector(kWtTotalSelector, {timeout: 1000})).getProperty('textContent')).jsonValue();
+        const value = await (await (await page.waitForSelector(kWtTotalSelector, { timeout: 100 })).getProperty('textContent')).jsonValue();
         data.push({ [evCharger]: value });
       } catch (error) {
         data.push({ [evCharger]: null });
