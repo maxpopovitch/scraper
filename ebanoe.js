@@ -1,16 +1,16 @@
 // node ebanoe.js
 
-const customParseFormat = require('dayjs/plugin/customParseFormat');
-const dayjs = require('dayjs');
-require('dayjs/locale/ru');
-const fs = require('fs');
-const cheerio = require('cheerio');
-const puppeteer = require('puppeteer-extra');
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru.js';
+import fs from 'fs';
+import cheerio from 'cheerio';
+import puppeteer from 'puppeteer-extra';
 
 dayjs.extend(customParseFormat);
 
 // add stealth plugin and use defaults (all evasion techniques)
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 puppeteer.use(StealthPlugin());
 
 puppeteer
@@ -61,6 +61,10 @@ puppeteer
         });
       });
 
-    fs.writeFileSync('ebanoe.json', JSON.stringify(data, null, 4));
+    if (!fs.existsSync('data')){
+      fs.mkdirSync('data');
+    }
+
+    fs.writeFileSync('data/ebanoe.json', JSON.stringify(data, null, 4));
     await browser.close();
   });

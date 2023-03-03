@@ -1,5 +1,4 @@
 node_modules
 .idea/
-ebanoe.json
-linkedin.json
-stackoverflow.json
+data
+autoenterprise-creds.js

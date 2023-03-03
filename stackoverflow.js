@@ -67,6 +67,10 @@ puppeteer
         });
       });
 
-    fs.writeFileSync('stackoverflow.json', JSON.stringify(data, null, 4));
+    if (!fs.existsSync('data')){
+      fs.mkdirSync('data');
+    }
+
+    fs.writeFileSync('data/stackoverflow.json', JSON.stringify(data, null, 4));
     await browser.close();
   });

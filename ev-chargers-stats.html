@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EV Chargers Stats</title>
+</head>
+<body>
+<div>
+  <canvas id="chart" width="800" height="600"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script type="module">
+  import periods from './periods.js';
+
+  const labels = [...periods];
+
+  const data = {
+    labels
+  };
+
+  const evChargersData = {};
+  const colors = {
+    2977: '#008000',
+    2975: '#E99700',
+    3922: '#0EC4FF',
+    3921: '#777777',
+  };
+
+  const urls = periods.map((period) => `data/autoenterprise/${period}.json`);
+
+  const response = await Promise.all(
+    urls.map(url => fetch(url).then(res => res.json()))
+  )
+
+  await response.reduce(async (result, item) => {
+    Object.values(item).forEach((evChargerData) => {
+      const evCharger = Object.keys(evChargerData)[0];
+      const dataToSave = evChargerData[evCharger];
+
+      if (!evChargersData[evCharger]) {
+        evChargersData[evCharger] = [dataToSave];
+      } else {
+        evChargersData[evCharger].push(dataToSave);
+      }
+    })
+
+    return result;
+  }, []);
+
+  const datasets = Object.keys(evChargersData).map((evCharger) => ({
+    data: evChargersData[evCharger],
+    label: evCharger,
+    borderColor: colors[evCharger],
+    fill: false
+  }));
+
+  data.datasets = [...datasets];
+
+  new Chart(document.getElementById('chart'), {
+    type: 'line',
+    data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+        title: {
+          display: true,
+          text: 'Electricity consuming (in kWts)'
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 // node linkedin.js "john doe"
 
-const fs = require('fs');
-const cheerio = require('cheerio');
-const puppeteer = require('puppeteer');
+import fs from 'fs';
+import cheerio from 'cheerio';
+import puppeteer from 'puppeteer';
 
 const request = process.argv[2];
 if (!request) {
@@ -17,7 +17,7 @@ async function run () {
 
   const usernameSelector = '[autocomplete="username"]';
   const passwordSelector = '[autocomplete="current-password"]';
-  const signInBtnSelector = '.sign-in-form__submit-button';
+  const signInBtnSelector = '[data-id="sign-in-form__submit-btn"]';
 
   await page.waitForSelector(usernameSelector);
   await page.click(usernameSelector);
@@ -56,8 +56,12 @@ async function run () {
     });
   });
 
-  fs.writeFileSync('linkedin.json', JSON.stringify(data, null, 4));
-  browser.close();
+  if (!fs.existsSync('data')){
+    fs.mkdirSync('data');
+  }
+
+  fs.writeFileSync('data/linkedin.json', JSON.stringify(data, null, 4));
+  await browser.close();
 }
 
 run();
